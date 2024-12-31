@@ -1,5 +1,5 @@
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,9 +11,15 @@ export default defineConfig({
 	},
 	optimizeDeps: {
 		include: ["msw"],
+		exclude: ["@mswjs/interceptors"],
 	},
 	resolve: {
 		mainFields: ["module", "main", "browser"],
 		conditions: ["import", "module", "browser", "default"],
+	},
+	build: {
+		commonjsOptions: {
+			include: [/node_modules/],
+		},
 	},
 });
