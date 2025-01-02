@@ -1,6 +1,10 @@
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import {
+	createTheme,
+	StyledEngineProvider,
+	ThemeProvider,
+} from "@mui/material/styles";
 import * as React from "react";
 import { AuthApp } from "./AuthApp";
 import "./mocks";
@@ -17,6 +21,16 @@ const theme = createTheme({
 		},
 		secondary: {
 			main: "#E50914",
+		},
+	},
+	spacing: 8,
+	components: {
+		MuiButton: {
+			styleOverrides: {
+				root: {
+					textTransform: "none",
+				},
+			},
 		},
 	},
 });
@@ -58,17 +72,19 @@ function App() {
 	};
 
 	return (
-		<ThemeProvider theme={theme}>
-			{status === "fetching" ? (
-				<Backdrop open={true}>
-					<CircularProgress color="primary" />
-				</Backdrop>
-			) : authUser ? (
-				<AuthApp logout={logout} />
-			) : (
-				<UnauthApp login={login} register={register} error={authError} />
-			)}
-		</ThemeProvider>
+		<StyledEngineProvider injectFirst>
+			<ThemeProvider theme={theme}>
+				{status === "fetching" ? (
+					<Backdrop open={true}>
+						<CircularProgress color="primary" />
+					</Backdrop>
+				) : authUser ? (
+					<AuthApp logout={logout} />
+				) : (
+					<UnauthApp login={login} register={register} error={authError} />
+				)}
+			</ThemeProvider>
+		</StyledEngineProvider>
 	);
 }
 
