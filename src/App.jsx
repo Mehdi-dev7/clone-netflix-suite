@@ -1,16 +1,17 @@
-import * as React from "react";
-import "./mocks";
-import * as authNetflix from "./utils/authNetflixProvider";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { UnauthApp } from "./UnauthApp";
+import * as React from "react";
 import { AuthApp } from "./AuthApp";
-import { useFetchData } from "./utils/hooks";
+import "./mocks";
+import { UnauthApp } from "./UnauthApp";
+import * as authNetflix from "./utils/authNetflixProvider";
 import { clientAuth } from "./utils/clientApi";
-import { Backdrop, CircularProgress } from "@mui/material";
+import { useFetchData } from "./utils/hooks";
 
 const theme = createTheme({
 	palette: {
-		type: "dark",
+		mode: "dark",
 		primary: {
 			main: "#E50914",
 		},
@@ -21,59 +22,36 @@ const theme = createTheme({
 });
 
 async function getUserByToken() {
-	let user = null;
-	const sessionId = await authNetflix.getToken();
+	const token = authNetflix.getToken();
+	if (!token) return null;
 
-	if (sessionId) {
-		try {
-			const data = await clientAuth("account", {
-				token: sessionId,
-			});
-			user = data.data;
-		} catch (error) {
-			console.error("Error fetching user:", error);
-			authNetflix.logout();
-
-			// Tentative d'auto-login si la session est invalide
-			try {
-				user = await authNetflix.autoLogin();
-			} catch (autoLoginError) {
-				console.log("Auto-login failed", autoLoginError);
-			}
-		}
-	} else {
-		// Tentative d'auto-login s'il n'y a pas de session
-		try {
-			user = await authNetflix.autoLogin();
-		} catch (error) {
-			console.log("No stored credentials or auto-login failed");
-		}
+	try {
+		const { user } = await clientAuth("me");
+		return user;
+	} catch (error) {
+		console.error("Auto-login failed:", error);
+		authNetflix.logout();
+		return null;
 	}
-	return user;
 }
 
 function App() {
-	const { data: authUser, error, setData, execute, status } = useFetchData();
-	const [authError, setAuthError] = React.useState();
-
+	const { data: authUser, execute, status, setData } = useFetchData();
 	React.useEffect(() => {
 		execute(getUserByToken());
 	}, [execute]);
 
-	const login = (data) => {
+	const [authError, setAuthError] = React.useState();
+	const login = (data) =>
 		authNetflix
 			.login(data)
 			.then((user) => setData(user))
 			.catch((err) => setAuthError(err));
-	};
-
-	const register = (data) => {
+	const register = (data) =>
 		authNetflix
 			.register(data)
 			.then((user) => setData(user))
 			.catch((err) => setAuthError(err));
-	};
-
 	const logout = () => {
 		authNetflix.logout();
 		setData(null);

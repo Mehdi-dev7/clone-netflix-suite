@@ -23,16 +23,20 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const NetflixApp = ({ logout }) => {
+const NetflixApp = ({logout}) => {
   const classes = useStyles()
   const {data: headerMovie, error, status, execute} = useFetchData()
   const [type] = React.useState(getRandomType())
   const defaultMovieId = getRandomId(type)
- 
+  const [queried, setQueried] = React.useState(true)
+
   React.useEffect(() => {
+    if (!queried) {
+      return
+    }
     execute(clientApi(`${type}/${defaultMovieId}`))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    setQueried(false)
+  }, [execute, defaultMovieId, queried, type])
 
   if (status === 'error') {
     // sera catché par ErrorBoundary

@@ -15,7 +15,9 @@ const NetflixRow = ({
 	watermark = false,
 }) => {
 	const { data, error, status, execute } = useFetchData();
-	const endpointLatest = `${type}/latest`;
+	const [queried, setQueried] = React.useState(true);
+
+	const endpointLatest = `${type}/upcoming`;
 	const endpointPopular = `${type}/popular`;
 	const endpointTopRated = `${type}/top_rated`;
 	const endpointGenre = `discover/${type}?with_genres=${param}`;
@@ -43,12 +45,16 @@ const NetflixRow = ({
 	}
 
 	React.useEffect(() => {
+		if (!queried) {
+			return;
+		}
 		execute(clientApi(`${endpoint}`));
-	}, [endpoint, execute]);
+		setQueried(false);
+	}, [endpoint, execute, queried]);
 
 	const buildImagePath = (data) => {
 		const image = wideImage ? data?.backdrop_path : data?.poster_path;
-		return `${imagePath400}${image}`;
+		return image ? `${imagePath400}${image}` : null;
 	};
 
 	const watermarkClass = watermark ? "watermarked" : "";

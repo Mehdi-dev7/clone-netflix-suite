@@ -1,42 +1,31 @@
-import { AUTH_URL, localStorageTokenKey } from "../config";
+/* 
+ -- Ne pas modifier --
+ Exemple d'utilitaire permettant de se connecter au backend Netflix
+*/
+import { localStorageTokenKey } from "../config";
+import { clientAuth } from "./clientApi";
 
-async function clientApiNetflix(endpoint, data) {
-	const config = {
-		method: "POST",
-		body: JSON.stringify(data),
-		headers: { "Content-Type": "application/json" },
-	};
-
-	return fetch(`${AUTH_URL}/${endpoint}`, config).then(async (response) => {
-		const data = await response.json();
-		if (response.ok) {
-			return data;
-		} else {
-			console.log("clientApiNetflix ko", data);
-			return Promise.reject(data);
-		}
-	});
+function handleUserResponse({ user }) {
+	window.localStorage.setItem(localStorageTokenKey, user.token);
+	return user;
 }
 
 function getToken() {
 	return window.localStorage.getItem(localStorageTokenKey);
 }
 
-function storeToken({ user }) {
-	window.localStorage.setItem(localStorageTokenKey, user.token);
-	return user;
+function login({ username, password }) {
+	return clientAuth("login", { username, password }).then(handleUserResponse);
 }
 
-function login(form) {
-	return clientApiNetflix("login", form).then(storeToken);
-}
-
-function register(form) {
-	return clientApiNetflix("register", form).then(storeToken);
+function register({ username, password }) {
+	return clientAuth("register", { username, password }).then(
+		handleUserResponse
+	);
 }
 
 function logout() {
 	window.localStorage.removeItem(localStorageTokenKey);
 }
 
-export { getToken, login, register, logout };
+export { getToken, login, logout, register };

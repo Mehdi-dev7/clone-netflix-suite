@@ -1,11 +1,15 @@
-import { http, createServer } from "msw";
+import { http } from "msw";
+import { setupWorker } from "msw/browser";
 import { handlers } from "./handlers";
 
-export const server = createServer(handlers);
+export const worker = setupWorker(...handlers);
 
-if (process.env.NODE_ENV === "test") {
-	server.listen();
-	console.log("🔶 Mock Service Worker activé pour les tests");
+if (import.meta.env.DEV) {
+	worker
+		.start({
+			onUnhandledRequest: "bypass",
+		})
+		.catch(console.error);
 }
 
 export { http };
