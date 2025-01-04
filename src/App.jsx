@@ -14,7 +14,14 @@ import { clientAuth } from "./utils/clientApi";
 import { useFetchData } from "./utils/hooks";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+	defaultOptions: {
+			queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 15 * 60 * 1000, // 15 minutes
+		},
+	},
+});
 
 const theme = createTheme({
 	palette: {

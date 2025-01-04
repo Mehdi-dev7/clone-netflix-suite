@@ -29,7 +29,9 @@ const NetflixHeader = ({ movie, type = TYPE_MOVIE }) => {
 	const {data} = useQuery(`bookmark`, async () => {
     const token = await authNetflix.getToken()
     return clientNetFlix(`bookmark`, {token})
-  })
+  },{
+		keepPreviousData: true
+	});
 
   const addMutation = useMutation(
     async ({type, id}) => {

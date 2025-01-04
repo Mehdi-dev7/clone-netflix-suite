@@ -14,7 +14,10 @@ const NetflixBookmark = ({ logout }) => {
 	});
 	const id = data?.bookmark?.movies?.[0] ?? 749274;
 	const { data: headerMovie } = useQuery(`${TYPE_MOVIE}/${id}`, () =>
-		clientApi(`${TYPE_MOVIE}/${id}`)
+		clientApi(`${TYPE_MOVIE}/${id}`),
+		{
+			keepPreviousData: true,
+		}
 	);
 
 	return (

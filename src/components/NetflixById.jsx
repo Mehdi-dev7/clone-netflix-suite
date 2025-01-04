@@ -18,7 +18,10 @@ const NetflixById = ({ logout }) => {
 	const [id, setId] = React.useState(type === TYPE_TV ? tvId : movieId);
 
 	const { data: headerMovie } = useQuery(`${type}/${id}`, () =>
-		clientApi(`${type}/${id}`)
+		clientApi(`${type}/${id}`),
+		{
+			keepPreviousData: true,
+		}
 	);
 
 	React.useEffect(() => {

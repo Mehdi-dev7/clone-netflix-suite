@@ -43,7 +43,9 @@ const NetflixRow = ({
 			throw new Error("Type non supporté");
 	}
 
-	const { data, status, error } = useQuery(endpoint, () => clientApi(endpoint));
+	const { data, status, error } = useQuery(endpoint, () => clientApi(endpoint), {
+		keepPreviousData: true,
+	});
 
 	const buildImagePath = (data) => {
 		const image = wideImage ? data?.backdrop_path : data?.poster_path;

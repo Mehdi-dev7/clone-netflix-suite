@@ -19,6 +19,9 @@ const NetflixApp = ({logout}) => {
 
   const {data: headerMovie} = useQuery(`${type}/${defaultMovieId}`, () =>
     clientApi(`${type}/${defaultMovieId}`),
+    {
+      keepPreviousData: true
+    }
   )
 
   

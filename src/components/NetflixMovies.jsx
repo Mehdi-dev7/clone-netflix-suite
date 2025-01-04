@@ -13,7 +13,10 @@ const NetflixMovies = ({ logout }) => {
 	const [type] = React.useState(TYPE_MOVIE);
 	const defaultMovieId = getRandomId(type);
 	const { data: headerMovie } = useQuery(`${type}/${defaultMovieId}`, () =>
-		clientApi(`${type}/${defaultMovieId}`)
+		clientApi(`${type}/${defaultMovieId}`),
+		{
+			keepPreviousData: true,
+		}
 	);
 
 	return (
