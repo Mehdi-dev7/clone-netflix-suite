@@ -2,7 +2,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
 	createTheme,
-	StyledEngineProvider,
+	
 	ThemeProvider,
 } from "@mui/material/styles";
 import * as React from "react";
@@ -12,6 +12,9 @@ import { UnauthApp } from "./UnauthApp";
 import * as authNetflix from "./utils/authNetflixProvider";
 import { clientAuth } from "./utils/clientApi";
 import { useFetchData } from "./utils/hooks";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 
 const theme = createTheme({
 	palette: {
@@ -72,7 +75,8 @@ function App() {
 	};
 
 	return (
-		<StyledEngineProvider injectFirst>
+		<QueryClientProvider client={queryClient}>
+		
 			<ThemeProvider theme={theme}>
 				{status === "fetching" ? (
 					<Backdrop open={true}>
@@ -84,7 +88,8 @@ function App() {
 					<UnauthApp login={login} register={register} error={authError} />
 				)}
 			</ThemeProvider>
-		</StyledEngineProvider>
+		
+		</QueryClientProvider>
 	);
 }
 

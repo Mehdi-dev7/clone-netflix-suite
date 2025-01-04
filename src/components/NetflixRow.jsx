@@ -1,6 +1,6 @@
 import * as React from "react";
 import { TYPE_MOVIE, imagePath400 } from "../config";
-import { useFetchData } from "../utils/hooks";
+import { useQuery } from "react-query";
 import { clientApi } from "../utils/clientApi";
 import { Alert, AlertTitle } from "@mui/material";
 import { RowSkeleton } from "./skeletons/RowSkeleton";
@@ -14,8 +14,7 @@ const NetflixRow = ({
 	filter = "populaire",
 	watermark = false,
 }) => {
-	const { data, error, status, execute } = useFetchData();
-	const [queried, setQueried] = React.useState(true);
+	
 
 	const endpointLatest = `${type}/upcoming`;
 	const endpointPopular = `${type}/popular`;
@@ -44,13 +43,7 @@ const NetflixRow = ({
 			throw new Error("Type non supporté");
 	}
 
-	React.useEffect(() => {
-		if (!queried) {
-			return;
-		}
-		execute(clientApi(`${endpoint}`));
-		setQueried(false);
-	}, [endpoint, execute, queried]);
+	const { data, status, error } = useQuery(endpoint, () => clientApi(endpoint));
 
 	const buildImagePath = (data) => {
 		const image = wideImage ? data?.backdrop_path : data?.poster_path;
@@ -59,7 +52,7 @@ const NetflixRow = ({
 
 	const watermarkClass = watermark ? "watermarked" : "";
 
-	if (status === "fetching" || status === "idle") {
+	if (status === "loading" || status === "idle") {
 		return <RowSkeleton title={title} wideImage={wideImage} />;
 	}
 	if (status === "error") {
