@@ -14,7 +14,18 @@ const clientApi = async (endpoint) => {
 	const page = 1;
 	const startChar = endpoint.includes("?") ? `&` : `?`;
 	const keyLang = `${startChar}api_key=${apiKey}&language=${lang}&page=${page}`;
-	return axios.get(`${API_URL}/${endpoint}${keyLang}`);
+	return axios.get(`${API_URL}/${endpoint}${keyLang}`)
+		.catch((error) => {
+			if (error.response) {
+				const err = {
+					...error.response,
+					message: error.response?.data?.status_message,
+				};
+				return Promise.reject(err);
+			} else {
+				return Promise.reject(error);
+			}
+		});
 };
 
 async function clientAuth(endpoint, data) {

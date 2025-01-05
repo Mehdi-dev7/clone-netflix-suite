@@ -19,9 +19,27 @@ const queryClient = new QueryClient({
 			queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes
       cacheTime: 15 * 60 * 1000, // 15 minutes
+			useErrorBoundary: true,
+      refetchOnWindowFocus: false,
+      retryDelay: 500,
+			retry: (failureCount, error) => {
+        if (error.status === 404) return false
+        else if (error.status === 401) return false
+        else if (failureCount > 3) return false
+        else return true
+      },
+     
+		},
+    mutations: {
+      useErrorBoundary: true,
+      refetchOnWindowFocus: false,
+      retryDelay: 500,
+      retry: 1,
+      // mutation options
+    },
 		},
 	},
-});
+);
 
 const theme = createTheme({
 	palette: {

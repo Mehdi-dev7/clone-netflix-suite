@@ -12,7 +12,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 const NetflixHeader = ({ movie, type = TYPE_MOVIE }) => {
-	const queryClient =  useQueryClient();
+	const queryClient = useQueryClient();
 	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
 	const [mutateBookmarkError, setMutateBookmarkError] = React.useState();
 	const title = type === TYPE_MOVIE ? movie?.title : movie?.name;
@@ -26,76 +26,78 @@ const NetflixHeader = ({ movie, type = TYPE_MOVIE }) => {
 		height: "448px",
 	};
 
-	const {data} = useQuery(`bookmark`, async () => {
-    const token = await authNetflix.getToken()
-    return clientNetFlix(`bookmark`, {token})
-  },{
-		keepPreviousData: true
-	});
+	const { data } = useQuery(
+		`bookmark`,
+		async () => {
+			const token = await authNetflix.getToken();
+			return clientNetFlix(`bookmark`, { token });
+		},
+		{
+			keepPreviousData: true,
+		}
+	);
 
-  const addMutation = useMutation(
-    async ({type, id}) => {
-      const token = await authNetflix.getToken()
-      return clientNetFlix(`bookmark/${type}`, {
-        token,
-        data: {id},
-        method: 'POST',
-      })
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('bookmark')
-        setSnackbarOpen(true)
-        setMutateBookmarkError()
-      },
-      onError: error => {
-        setSnackbarOpen(true)
-        setMutateBookmarkError(error)
-      },
-    },
-  )
+	const addMutation = useMutation(
+		async ({ type, id }) => {
+			const token = await authNetflix.getToken();
+			return clientNetFlix(`bookmark/${type}`, {
+				token,
+				data: { id },
+				method: "POST",
+			});
+		},
+		{
+			onSuccess: () => {
+				queryClient.invalidateQueries("bookmark");
+				setSnackbarOpen(true);
+				setMutateBookmarkError();
+			},
+			onError: (error) => {
+				setSnackbarOpen(true);
+				setMutateBookmarkError(error);
+			},
+		}
+	);
 	const deleteMutation = useMutation(
-    async ({type, id}) => {
-      const token = await authNetflix.getToken()
-      return clientNetFlix(`bookmark/${type}`, {
-        token,
-        data: {id},
-        method: 'DELETE',
-      })
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('bookmark')
-        setSnackbarOpen(true)
-        setMutateBookmarkError()
-      },
-      onError: error => {
-        console.log('onError', error)
-        setSnackbarOpen(true)
-        setMutateBookmarkError(error)
-      },
-    },
-  )
-	
+		async ({ type, id }) => {
+			const token = await authNetflix.getToken();
+			return clientNetFlix(`bookmark/${type}`, {
+				token,
+				data: { id },
+				method: "DELETE",
+			});
+		},
+		{
+			onSuccess: () => {
+				queryClient.invalidateQueries("bookmark");
+				setSnackbarOpen(true);
+				setMutateBookmarkError();
+			},
+			onError: (error) => {
+				console.log("onError", error);
+				setSnackbarOpen(true);
+				setMutateBookmarkError(error);
+			},
+		}
+	);
 
 	const isInList = data?.bookmark[
 		type === TYPE_MOVIE ? "movies" : "series"
 	]?.includes(movie?.id);
-	
 
 	const handleAddToListClick = () => {
-    addMutation.mutate({
-      type,
-      id: movie.id,
-    })
-  }
+		addMutation.mutate({
+			type,
+			id: movie.id,
+		});
+	};
 
-  const handleDeleteToListClick = () => {
-    deleteMutation.mutate({
-      type,
-      id: movie.id,
-    })
-  }
+	const handleDeleteToListClick = () => {
+		deleteMutation.mutate({
+			type,
+			id: movie.id,
+		});
+	};
 
 	if (!movie) {
 		return <HeaderSkeleton></HeaderSkeleton>;
@@ -154,7 +156,7 @@ const NetflixHeader = ({ movie, type = TYPE_MOVIE }) => {
 					onClose={() => setSnackbarOpen(false)}
 				>
 					<Alert severity="error" sx={{ width: "100%" }}>
-						{`Problème lors de l'ajout : ${mutateBookmarkError.message}`}
+						Problème lors de l'ajout : {mutateBookmarkError.message}
 					</Alert>
 				</Snackbar>
 			) : null}
