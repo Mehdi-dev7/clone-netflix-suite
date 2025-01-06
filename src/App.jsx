@@ -1,10 +1,6 @@
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import {
-	createTheme,
-	
-	ThemeProvider,
-} from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import * as React from "react";
 import { AuthApp } from "./AuthApp";
 import "./mocks";
@@ -16,24 +12,22 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 const queryClient = new QueryClient({
 	defaultOptions: {
-			queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      cacheTime: 15 * 60 * 1000, // 15 minutes
+		queries: {
+			staleTime: 5 * 60 * 1000, // 5 minutes
+			cacheTime: 15 * 60 * 1000, // 15 minutes
 			useErrorBoundary: true,
-      refetchOnWindowFocus: false,
-      retryDelay: 500,
-		
+			refetchOnWindowFocus: false,
+			retryDelay: 500,
 		},
-    mutations: {
-      useErrorBoundary: false,
-      refetchOnWindowFocus: false,
-      retryDelay: 500,
-      retry: 1,
-      // mutation options
-    },
+		mutations: {
+			useErrorBoundary: false,
+			refetchOnWindowFocus: false,
+			retryDelay: 500,
+			retry: 1,
+			// mutation options
 		},
 	},
-);
+});
 
 const theme = createTheme({
 	palette: {
@@ -90,12 +84,12 @@ function App() {
 			.catch((err) => setAuthError(err));
 	const logout = () => {
 		authNetflix.logout();
+		queryClient.clear();
 		setData(null);
 	};
 
 	return (
 		<QueryClientProvider client={queryClient}>
-		
 			<ThemeProvider theme={theme}>
 				{status === "fetching" ? (
 					<Backdrop open={true}>
@@ -107,7 +101,7 @@ function App() {
 					<UnauthApp login={login} register={register} error={authError} />
 				)}
 			</ThemeProvider>
-		
+			
 		</QueryClientProvider>
 	);
 }
