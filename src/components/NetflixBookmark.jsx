@@ -1,29 +1,19 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { TYPE_MOVIE, TYPE_TV, imagePath400 } from "../config";
-import * as authNetflix from "../utils/authNetflixProvider";
-import { clientApi, clientNetFlix } from "../utils/clientApi";
-import { useQuery } from "react-query";
 import { NetflixAppBar } from "./NetflixAppBar";
 import { NetflixHeader } from "./NetflixHeader";
+import {useMovie,useBookmark} from '../utils/hooksMovies'
 
 const NetflixBookmark = ({ logout }) => {
-	const { data } = useQuery("bookmark", async () => {
-		const token = await authNetflix.getToken();
-		return clientNetFlix(`bookmark`, { token });
-	});
+	const data = useBookmark();
 	const id = data?.bookmark?.movies?.[0] ?? 749274;
-	const { data: headerMovie } = useQuery(`${TYPE_MOVIE}/${id}`, () =>
-		clientApi(`${TYPE_MOVIE}/${id}`),
-		{
-			keepPreviousData: true,
-		}
-	);
+	const headerMovie = useMovie(TYPE_MOVIE, id);
 
 	return (
 		<>
 			<NetflixAppBar logout={logout} />
-			<NetflixHeader movie={headerMovie?.data} type={TYPE_MOVIE} />
+			<NetflixHeader movie={headerMovie} type={TYPE_MOVIE} />
 
 			<div className="row">
 				<h2>Films favoris</h2>
@@ -55,14 +45,14 @@ const NetflixBookmark = ({ logout }) => {
 };
 const Card = ({ id, type, watermark, wideImage }) => {
 	const [image, setImage] = React.useState();
-	const { data } = useQuery(`${type}/${id}`, () => clientApi(`${type}/${id}`));
+	const data = useMovie(type, id);
 
 	React.useEffect(() => {
 		const buildImagePath = (data) => {
 			const image = wideImage ? data?.backdrop_path : data?.poster_path;
 			return image ? `${imagePath400}${image}` : null;
 		};
-		setImage(buildImagePath(data?.data));
+		setImage(buildImagePath(data));
 	}, [data, wideImage]);
 
 	const watermarkClass = watermark ? "watermarked" : "";

@@ -7,6 +7,7 @@ import { clientApi } from "../utils/clientApi";
 import { useQuery } from "react-query";
 import { TYPE_MOVIE, TYPE_TV } from "../config";
 import { useParams, useLocation } from "react-router-dom";
+import { useMovie } from "../utils/hooksMovies";
 import "./Netflix.css";
 
 const NetflixById = ({ logout }) => {
@@ -16,13 +17,7 @@ const NetflixById = ({ logout }) => {
 		location.pathname.includes(TYPE_TV) ? TYPE_TV : TYPE_MOVIE
 	);
 	const [id, setId] = React.useState(type === TYPE_TV ? tvId : movieId);
-
-	const { data: headerMovie } = useQuery(`${type}/${id}`, () =>
-		clientApi(`${type}/${id}`),
-		{
-			keepPreviousData: true,
-		}
-	);
+  const headerMovie = useMovie(type, id);
 
 	React.useEffect(() => {
 		const type = location.pathname.includes(TYPE_TV) ? TYPE_TV : TYPE_MOVIE;
@@ -38,7 +33,7 @@ const NetflixById = ({ logout }) => {
 	return (
 		<div>
 			<NetflixAppBar logout={logout} />
-			<NetflixHeader movie={headerMovie?.data} type={type} />
+			<NetflixHeader movie={headerMovie} type={type} />
 			<NetflixRow
 				wideImage={true}
 				watermark={true}

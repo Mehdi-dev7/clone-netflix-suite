@@ -4,9 +4,8 @@ import {NetflixRow} from './NetflixRow'
 import {NetFlixFooter} from './NetFlixFooter'
 import {NetflixHeader} from './NetflixHeader'
 import {getRandomType, getRandomId} from '../utils/helper'
-import {clientApi} from '../utils/clientApi'
-import { useQuery } from 'react-query'
 import {TYPE_MOVIE, TYPE_TV} from '../config'
+import { useMovie } from '../utils/hooksMovies'
 import './Netflix.css'
 
 
@@ -17,18 +16,13 @@ const NetflixApp = ({logout}) => {
   const defaultMovieId = getRandomId(type)
   
 
-  const {data: headerMovie} = useQuery(`${type}/${defaultMovieId}`, () =>
-    clientApi(`${type}/${defaultMovieId}`),
-    {
-      keepPreviousData: true
-    }
-  )
+ const headerMovie = useMovie(type, defaultMovieId)
 
   
   return (
     <div>
       <NetflixAppBar logout={logout} />
-      <NetflixHeader movie={headerMovie?.data} type={type} />
+      <NetflixHeader movie={headerMovie} type={type} />
       <NetflixRow
         wideImage={true}
         watermark={true}
@@ -71,7 +65,7 @@ const NetflixApp = ({logout}) => {
       />
 
     
-      <NetFlixFooter color="secondary" si />
+      <NetFlixFooter color="secondary" />
     </div>
   )
 }
