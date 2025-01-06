@@ -7,6 +7,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/authContext";
 
 // ci-dessous, il sont pris des exemple de composant de recherche de Mui
 //📑 https://mui.com/components/app-bar/#main-content
@@ -54,7 +55,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	},
 }));
 
-const NetflixAppBar = ({ logout }) => {
+const NetflixAppBar = () => {
+	const { logout} = useAuth();
 	const navigate = useNavigate();
 	const [query, setQuery] = React.useState("");
 	const [appBarStyle, setAppBarStyle] = React.useState({

@@ -9,6 +9,7 @@ import * as authNetflix from "./utils/authNetflixProvider";
 import { clientAuth } from "./utils/clientApi";
 import { useFetchData } from "./utils/hooks";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { AuthContext } from "./context/authContext";
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -88,20 +89,23 @@ function App() {
 		setData(null);
 	};
 
+	const props = { authUser, authError, login, register, logout };
+
 	return (
 		<QueryClientProvider client={queryClient}>
 			<ThemeProvider theme={theme}>
-				{status === "fetching" ? (
-					<Backdrop open={true}>
-						<CircularProgress color="primary" />
-					</Backdrop>
-				) : authUser ? (
-					<AuthApp logout={logout} />
-				) : (
-					<UnauthApp login={login} register={register} error={authError} />
-				)}
+				<AuthContext.Provider value={props}>
+					{status === "fetching" ? (
+						<Backdrop open={true}>
+							<CircularProgress color="primary" />
+						</Backdrop>
+					) : authUser ? (
+						<AuthApp />
+					) : (
+						<UnauthApp />
+					)}
+				</AuthContext.Provider>
 			</ThemeProvider>
-			
 		</QueryClientProvider>
 	);
 }

@@ -9,8 +9,11 @@ import { NetflixSeries } from "./components/NetflixSeries";
 import { NetflixNews } from "./components/NetflixNews";
 import { NetflixBookmark } from "./components/NetflixBookmark";
 import { NetflixSearch } from "./components/NetflixSearch";
+import { useAuth } from "./context/authContext";
+import React from "react";
 
-function AuthApp({ logout }) {
+function AuthApp() {
+	const { logout } = useAuth();
 	return (
 		<Router>
 			<ErrorBoundary FallbackComponent={ErrorFallback}>

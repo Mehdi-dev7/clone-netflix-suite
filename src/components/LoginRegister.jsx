@@ -12,7 +12,8 @@ import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
-import React from "react";
+import {useAuth } from "../context/authContext";
+import React, { use } from "react";
 
 const FormContainer = styled("form")(({ theme }) => ({
 	display: "flex",
@@ -114,12 +115,9 @@ function PopupLogin({
 	open,
 	handleClose,
 	signup = false,
-	login,
-	register,
-	logout,
-	error,
 	status,
 }) {
+	const {login, logout, register, authError: error} = useAuth()
 	const [create, setCreate] = React.useState(signup);
 	const handleSignUp = () => {
 		setCreate(true);

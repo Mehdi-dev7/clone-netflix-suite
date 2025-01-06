@@ -2,7 +2,7 @@ import * as React from "react";
 import LoginRegister from "./components/LoginRegister";
 
 
-function UnauthApp({ login, register, error }) {
+function UnauthApp() {
 	const imageUrl = "/images/posters.jpg";
 	return (
 		<div
@@ -26,7 +26,7 @@ function UnauthApp({ login, register, error }) {
 			/>
 
 			<div>
-				<LoginRegister open={true} login={login} register={register} error={error} />
+				<LoginRegister open={true} />
 			</div>
 		</div>
 	);
