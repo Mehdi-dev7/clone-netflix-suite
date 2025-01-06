@@ -8,6 +8,7 @@ import { NetflixMovies } from "./components/NetflixMovies";
 import { NetflixSeries } from "./components/NetflixSeries";
 import { NetflixNews } from "./components/NetflixNews";
 import { NetflixBookmark } from "./components/NetflixBookmark";
+import { NetflixSearch } from "./components/NetflixSearch";
 
 function AuthApp({ logout }) {
 	return (
@@ -24,6 +25,7 @@ function AuthApp({ logout }) {
 					<Route path="/series" element={<NetflixSeries logout={logout} />} />
 					<Route path="/news" element={<NetflixNews logout={logout} />} />
 					<Route path="/list" element={<NetflixBookmark logout={logout} />} />
+					<Route path="/search/:query" element={<NetflixSearch logout={logout} />} />
 					<Route path="*" element={<Error404 />} />
 				</Routes>
 			</ErrorBoundary>
