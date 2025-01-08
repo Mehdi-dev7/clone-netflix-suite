@@ -1,15 +1,49 @@
 import * as React from "react";
+import { TYPE_TV } from "../config";
 
 const HistoryMovieContext = React.createContext();
+const MAX_ELEMENTS = 3;
 
+const reducer = (state, action) => {
+	switch (action.type) {
+		case "addMovie":
+			return {
+				...state,
+				movies: [action.payload, ...state.movies.slice(0, MAX_ELEMENTS - 1)],
+			};
+		case "addSerie":
+			return {
+				...state,
+				series: [action.payload, ...state.series.slice(0, MAX_ELEMENTS - 1)],
+			};
+		default:
+			throw new Error("Action non supporté");
+	}
+};
 const HistoryMovieProvider = (props) => {
-	const [movies, setMovies] = React.useState([]);
-	const [series, setSeries] = React.useState([]);
-
+	const [state, dispatch] = React.useReducer(reducer, {
+		movies: [],
+		series: [],
+	});
+	
+  const addMovie = React.useCallback(movie => {
+    dispatch({
+      type: 'addMovie',
+      payload: movie,
+    })
+  }, [])
+  const addSerie = React.useCallback(serie => {
+    dispatch({
+      type: 'addSerie',
+      payload: serie,
+    })
+  }, [])
+  const { movies, series } = state;
+  const value = {movies, series, addMovie, addSerie}
 
 	return (
 		<HistoryMovieContext.Provider
-			value={{ movies, series, setMovies, setSeries }}
+			value={value}
 			{...props}
 		/>
 	);
@@ -24,4 +58,19 @@ const useNavigateMovie = () => {
 	return context;
 };
 
-export { HistoryMovieContext, useNavigateMovie, HistoryMovieProvider };
+const useAddHistory = (movie, type = TYPE_TV) => {
+  const { addMovie, addSerie } = useNavigateMovie();
+
+  React.useEffect(() => {
+    if (movie) {
+      if (type === TYPE_TV) {
+        addSerie(movie);
+      } else {
+        addMovie(movie);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [movie]);
+};
+
+export { HistoryMovieContext, useNavigateMovie, HistoryMovieProvider, useAddHistory };

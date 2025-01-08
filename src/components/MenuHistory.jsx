@@ -73,6 +73,7 @@ function MenuHistory({ style }) {
 	};
 	const handleClose = () => {
 		setAnchorEl(null);
+    
 	};
 
 	return (
@@ -86,6 +87,7 @@ function MenuHistory({ style }) {
 				anchorEl={anchorEl}
 				open={open}
 				onClose={handleClose}
+        
 			>
 				<MenuItem onClick={handleClose} disableRipple>
 					<VisibilityIcon />
