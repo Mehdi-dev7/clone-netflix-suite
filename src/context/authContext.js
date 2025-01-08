@@ -15,40 +15,66 @@ const useAuth = () => {
 	}
 	return context;
 };
-// async function getUserByToken() {
-// 	let user = null;
-// 	const token = await authNetflix.getToken();
-// 	if (token) {
-// 		const data = await clientAuth("me", { token });
-// 		user = data.data.user;
-// 	}
-// 	return user;
-// }
 
-// const AuthProvider = (props) => {
-// 	const queryClient = useQueryClient();
-// 	const { data: authUser, execute, status, setData } = useFetchData();
-// 	React.useEffect(() => {
-// 		execute(getUserByToken());
-// 	}, [execute]);
+async function getUserByToken() {
+	const token = authNetflix.getToken();
+	if (!token) return null;
 
-// 	const [authError, setAuthError] = React.useState();
-// 	const login = (data) =>
-// 		authNetflix
-// 			.login(data)
-// 			.then((user) => setData(user))
-// 			.catch((err) => setAuthError(err));
-// 	const register = (data) =>
-// 		authNetflix
-// 			.register(data)
-// 			.then((user) => setData(user))
-// 			.catch((err) => setAuthError(err));
-// 	const logout = () => {
-// 		authNetflix.logout();
-// 		queryClient.clear();
-// 		setData(null);
-// 	};
-	
-// };
+	try {
+		const { user } = await clientAuth("me");
+		return user;
+	} catch (error) {
+		console.error("Auto-login failed:", error);
+		authNetflix.logout();
+		return null;
+	}
+}
+const AuthProvider = (props) => {
+  const queryClient = useQueryClient();
+  const { data: authUser, execute, status, setData } = useFetchData();
 
-export { AuthContext, useAuth };
+  React.useEffect(() => {
+    execute(getUserByToken());
+  }, [execute]);
+
+  const [authError, setAuthError] = React.useState();
+
+  const login = (data) =>
+    authNetflix
+      .login(data)
+      .then((user) => setData(user))
+      .catch((err) => setAuthError(err));
+
+  const register = (data) =>
+    authNetflix
+      .register(data)
+      .then((user) => setData(user))
+      .catch((err) => setAuthError(err));
+
+  const logout = () => {
+    authNetflix.logout();
+    queryClient.clear();
+    setData(null);
+  };
+
+  if (status === "fetching" || status === "idle") {
+    return React.createElement(
+      Backdrop,
+      { open: true },
+      React.createElement(CircularProgress, { color: "primary" })
+    );
+  }
+
+  if (status === "done") {
+    const value = { authUser, login, register, logout, authError };
+    return React.createElement(AuthContext.Provider, {
+      value,
+      ...props,
+    });
+  }
+
+  throw new Error("status invalide");
+};
+
+
+export { AuthContext, useAuth, AuthProvider };
