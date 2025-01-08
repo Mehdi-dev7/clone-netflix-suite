@@ -5,6 +5,7 @@ import { useFetchData } from "../utils/hooks";
 import { useQueryClient } from "react-query";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useClearHistory } from "./HistoryMoviesContext";
 
 const AuthContext = React.createContext();
 
@@ -32,6 +33,7 @@ async function getUserByToken() {
 const AuthProvider = (props) => {
   const queryClient = useQueryClient();
   const { data: authUser, execute, status, setData } = useFetchData();
+	const clearHistory = useClearHistory();
 
   React.useEffect(() => {
     execute(getUserByToken());
@@ -54,6 +56,7 @@ const AuthProvider = (props) => {
   const logout = () => {
     authNetflix.logout();
     queryClient.clear();
+		clearHistory();
     setData(null);
   };
 
