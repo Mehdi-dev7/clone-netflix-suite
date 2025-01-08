@@ -19,7 +19,7 @@ const NetflixById = ({ logout }) => {
 	const headerMovie = useMovie(type, id);
 	const { movies, series, setMovies, setSeries } = useNavigateMovie();
 
-	const MAX_ELEMENTS = 5;
+	const MAX_ELEMENTS = 3;
 	React.useEffect(() => {
 		if (headerMovie) {
 			if (type === TYPE_TV) {

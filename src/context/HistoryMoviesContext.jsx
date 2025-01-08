@@ -5,8 +5,7 @@ const HistoryMovieContext = React.createContext();
 const HistoryMovieProvider = (props) => {
 	const [movies, setMovies] = React.useState([]);
 	const [series, setSeries] = React.useState([]);
-	console.log("movies", movies);
-	console.log("series", series);
+
 
 	return (
 		<HistoryMovieContext.Provider

@@ -8,6 +8,7 @@ import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
+import { MenuHistory } from "./MenuHistory";
 
 // ci-dessous, il sont pris des exemple de composant de recherche de Mui
 //📑 https://mui.com/components/app-bar/#main-content
@@ -132,6 +133,7 @@ const NetflixAppBar = () => {
 						inputProps={{ "aria-label": "search" }}
 					/>
 				</Search>
+				<MenuHistory style={{ cursor : "pointer", marginLeft: "10px" }} />
 				<img
 					style={{ marginLeft: "auto", cursor: "pointer" }}
 					className="nav__avatar"
