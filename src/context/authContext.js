@@ -24,7 +24,7 @@ async function getUserByToken() {
 		const { user } = await clientAuth("me");
 		return user;
 	} catch (error) {
-		console.error("Auto-login failed:", error);
+		
 		authNetflix.logout();
 		return null;
 	}
