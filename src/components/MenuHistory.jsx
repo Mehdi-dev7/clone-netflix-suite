@@ -64,7 +64,6 @@ const StyledMenu = styled((props) => (
 }));
 
 function MenuHistory({ style }) {
-
 	const { movies, series } = useNavigateMovie();
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
@@ -73,7 +72,13 @@ function MenuHistory({ style }) {
 	};
 	const handleClose = () => {
 		setAnchorEl(null);
-    
+		if (document.activeElement) {
+			document.activeElement.blur();
+		}
+		const triggerButton = document.querySelector("#demo-customized-button");
+		if (triggerButton) {
+			triggerButton.focus();
+		}
 	};
 
 	return (
@@ -86,57 +91,61 @@ function MenuHistory({ style }) {
 				}}
 				anchorEl={anchorEl}
 				open={open}
-				onClose={handleClose}
-        
+				onClose={() => {
+					handleClose();
+					if (document.activeElement) {
+						document.activeElement.blur();
+					}
+				}}
 			>
 				<MenuItem onClick={handleClose} disableRipple>
 					<VisibilityIcon />
 					Dernières visites
 				</MenuItem>
-        {series.map((serie, index) => (
-          <MenuItem key={index} onClick={handleClose} disableRipple>
-            <MenuHistoryCard wideImage={true} movie={serie} type={TYPE_TV} />
-          </MenuItem>
-        ))}
-				
+				{series.map((serie, index) => (
+					<MenuItem key={index} onClick={handleClose} disableRipple>
+						<MenuHistoryCard wideImage={true} movie={serie} type={TYPE_TV} />
+					</MenuItem>
+				))}
+
 				<Divider sx={{ my: 0.5 }} />
-        {movies.map((movie, index) => (
-          <MenuItem key={index} onClick={handleClose} disableRipple>
-            <MenuHistoryCard wideImage={true} movie={movie} type={TYPE_MOVIE} />
-          </MenuItem>
-        ))}
-        {series.lenght === 0 && movies.lenght === 0 ? (
-				<MenuItem onClick={handleClose} disableRipple>
-					<DoNotDisturbIcon />
-					Pas d'historique
-				</MenuItem>
-        ) : null}
+				{movies.map((movie, index) => (
+					<MenuItem key={index} onClick={handleClose} disableRipple>
+						<MenuHistoryCard wideImage={true} movie={movie} type={TYPE_MOVIE} />
+					</MenuItem>
+				))}
+				{series.lenght === 0 && movies.lenght === 0 ? (
+					<MenuItem onClick={handleClose} disableRipple>
+						<DoNotDisturbIcon />
+						Pas d'historique
+					</MenuItem>
+				) : null}
 			</StyledMenu>
 		</div>
 	);
 }
 
-function MenuHistoryCard({ movie, type, wideImage=true }) {
+function MenuHistoryCard({ movie, type, wideImage = true }) {
 	const theme = useTheme();
-  const navigate = useNavigate();
-	
-	const buildImagePath = data => {
-	  const image = wideImage ? data?.backdrop_path : data?.poster_path
-	  return image ? `${imagePath400}${image}` : null
-	}
+	const navigate = useNavigate();
 
-	const title = (movie?.name ?? movie.original_title)?.substring(0, 20)
-	const description = movie?.overview?.substring(0, 30) + "..."
+	const buildImagePath = (data) => {
+		const image = wideImage ? data?.backdrop_path : data?.poster_path;
+		return image ? `${imagePath400}${image}` : null;
+	};
 
-  const handleClick = () => {
-    navigate(`/${type}/${movie.id}`)
-  }
+	const title = (movie?.name ?? movie.original_title)?.substring(0, 20);
+	const description = movie?.overview?.substring(0, 30) + "...";
+
+	const handleClick = () => {
+		navigate(`/${type}/${movie.id}`);
+	};
 	return (
 		<Card sx={{ display: "flex" }}>
 			<Box sx={{ display: "flex", flexDirection: "column" }}>
 				<CardContent sx={{ flex: "1 0 auto" }}>
 					<Typography component="div" variant="h5" style={{ width: "250px" }}>
-            {title}
+						{title}
 					</Typography>
 					<Typography
 						variant="subtitle1"
@@ -144,7 +153,7 @@ function MenuHistoryCard({ movie, type, wideImage=true }) {
 						component="div"
 						style={{ width: "250px" }}
 					>
-            {description}
+						{description}
 					</Typography>
 				</CardContent>
 				<Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
