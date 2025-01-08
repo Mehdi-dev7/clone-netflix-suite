@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { clientApi, clientNetFlix } from "./clientApi";
-import * as authNetflix from "./authNetflixProvider";
+import { clientApi } from "./clientApi";
+import { useClientNetflix } from "../context/authContext";
 
 const useSearchMovie = (query) => {
 	const { data } = useQuery(`search/multi?query=${query}`, () =>
@@ -47,10 +47,8 @@ const useMovieFilter = (type, filter, param) => {
 };
 
 const useBookmark = () => {
-	const { data } = useQuery(`bookmark`, async () => {
-		const token = await authNetflix.getToken();
-		return clientNetFlix(`bookmark`, { token });
-	});
+	const clientNetFlix = useClientNetflix();
+	const { data } = useQuery(`bookmark`, () => clientNetFlix(`bookmark`));
 	return data; /*?? loadingMovie*/
 };
 
@@ -61,11 +59,10 @@ const useAddBookmark = ({
 	onMutate = () => {},
 }) => {
 	const queryClient = useQueryClient();
+	const clientNetFlix = useClientNetflix();
 	const addMutation = useMutation(
 		async ({ type, id }) => {
-			const token = await authNetflix.getToken();
 			return clientNetFlix(`bookmark/${type}`, {
-				token,
 				data: { id },
 				method: "POST",
 			});
@@ -96,12 +93,10 @@ const useDeleteBookmark = ({
 	onMutate = () => {},
 }) => {
 	const queryClient = useQueryClient();
-
+	const clientNetFlix = useClientNetflix();
 	const deleteMutation = useMutation(
 		async ({ type, id }) => {
-			const token = await authNetflix.getToken();
 			return clientNetFlix(`bookmark/${type}`, {
-				token,
 				data: { id },
 				method: "DELETE",
 			});
@@ -131,5 +126,5 @@ export {
 	useBookmark,
 	useAddBookmark,
 	useDeleteBookmark,
-  useSearchMovie,
+	useSearchMovie,
 };

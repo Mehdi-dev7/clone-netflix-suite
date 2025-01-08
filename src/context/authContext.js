@@ -1,6 +1,6 @@
 import React from "react";
 import * as authNetflix from "../utils/authNetflixProvider";
-import { clientAuth } from "../utils/clientApi";
+import { clientAuth, clientNetFlix } from "../utils/clientApi";
 import { useFetchData } from "../utils/hooks";
 import { useQueryClient } from "react-query";
 import Backdrop from "@mui/material/Backdrop";
@@ -76,5 +76,11 @@ const AuthProvider = (props) => {
   throw new Error("status invalide");
 };
 
+const useClientNetflix = () => {
+	const {authUser:{token}} = useAuth()
+	
+	return (endpoint, data) => clientNetFlix(endpoint, {...data, token})
+}
 
-export { AuthContext, useAuth, AuthProvider };
+
+export { AuthContext, useAuth, AuthProvider, useClientNetflix };

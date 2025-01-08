@@ -1,7 +1,8 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import * as React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { AuthProvider} from "./authContext";
+import { AuthProvider } from "./authContext";
+import { HistoryMovieProvider } from "./HistoryMoviesContext";
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -48,13 +49,12 @@ function AppProviders({ children }) {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<ThemeProvider theme={theme}>
-				<AuthProvider>
-					{children}
-				</AuthProvider>
+				<HistoryMovieProvider>
+					<AuthProvider>{children}</AuthProvider>
+				</HistoryMovieProvider>
 			</ThemeProvider>
 		</QueryClientProvider>
 	);
 }
-
 
 export { AppProviders };
