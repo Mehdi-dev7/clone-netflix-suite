@@ -48,12 +48,10 @@ const HistoryMovieProvider = (props) => {
 			type: "clear",
 		});
 	});
-
 	const { movies, series } = state;
 	const value = React.useMemo(() => {
-		movies, series, addMovie, addSerie, clearHistory;
+		return { movies, series, addMovie, addSerie, clearHistory };
 	}, [addMovie, addSerie, clearHistory, movies, series]);
-	
 
 	return <HistoryMovieContext.Provider value={value} {...props} />;
 };
