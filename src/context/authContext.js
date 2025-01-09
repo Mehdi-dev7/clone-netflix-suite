@@ -3,9 +3,8 @@ import * as authNetflix from "../utils/authNetflixProvider";
 import { clientAuth, clientNetFlix } from "../utils/clientApi";
 import { useFetchData } from "../utils/hooks";
 import { useQueryClient } from "react-query";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
 import { useClearHistory } from "./HistoryMoviesContext";
+import LoadingFullScreen from "../components/LoadingFullScreen";
 
 const AuthContext = React.createContext();
 
@@ -25,65 +24,61 @@ async function getUserByToken() {
 		const { user } = await clientAuth("me");
 		return user;
 	} catch (error) {
-		
 		authNetflix.logout();
 		return null;
 	}
 }
 const AuthProvider = (props) => {
-  const queryClient = useQueryClient();
-  const { data: authUser, execute, status, setData } = useFetchData();
+	const queryClient = useQueryClient();
+	const { data: authUser, execute, status, setData } = useFetchData();
 	const clearHistory = useClearHistory();
 
-  React.useEffect(() => {
-    execute(getUserByToken());
-  }, [execute]);
+	React.useEffect(() => {
+		execute(getUserByToken());
+	}, [execute]);
 
-  const [authError, setAuthError] = React.useState();
+	const [authError, setAuthError] = React.useState();
 
-  const login = (data) =>
-    authNetflix
-      .login(data)
-      .then((user) => setData(user))
-      .catch((err) => setAuthError(err));
+	const login = (data) =>
+		authNetflix
+			.login(data)
+			.then((user) => setData(user))
+			.catch((err) => setAuthError(err));
 
-  const register = (data) =>
-    authNetflix
-      .register(data)
-      .then((user) => setData(user))
-      .catch((err) => setAuthError(err));
+	const register = (data) =>
+		authNetflix
+			.register(data)
+			.then((user) => setData(user))
+			.catch((err) => setAuthError(err));
 
-  const logout = () => {
-    authNetflix.logout();
-    queryClient.clear();
+	const logout = () => {
+		authNetflix.logout();
+		queryClient.clear();
 		clearHistory();
-    setData(null);
-  };
+		setData(null);
+	};
 
-  if (status === "fetching" || status === "idle") {
-    return React.createElement(
-      Backdrop,
-      { open: true },
-      React.createElement(CircularProgress, { color: "primary" })
-    );
-  }
+	if (status === "fetching" || status === "idle") {
+		return React.createElement(LoadingFullScreen); // LoadingFullScreen 
+	}
 
-  if (status === "done") {
-    const value = { authUser, login, register, logout, authError };
-    return React.createElement(AuthContext.Provider, {
-      value,
-      ...props,
-    });
-  }
+	if (status === "done") {
+		const value = { authUser, login, register, logout, authError };
+		return React.createElement(AuthContext.Provider, {
+			value,
+			...props,
+		});
+	}
 
-  throw new Error("status invalide");
+	throw new Error("status invalide");
 };
 
 const useClientNetflix = () => {
-	const {authUser:{token}} = useAuth()
-	
-	return (endpoint, data) => clientNetFlix(endpoint, {...data, token})
-}
+	const {
+		authUser: { token },
+	} = useAuth();
 
+	return (endpoint, data) => clientNetFlix(endpoint, { ...data, token });
+};
 
 export { AuthContext, useAuth, AuthProvider, useClientNetflix };

@@ -36,4 +36,4 @@ function AuthApp() {
 	);
 }
 
-export { AuthApp };
+export default AuthApp ;

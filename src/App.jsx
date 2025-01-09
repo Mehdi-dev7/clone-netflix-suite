@@ -1,8 +1,10 @@
 import * as React from "react";
-import { AuthApp } from "./AuthApp";
-import { UnauthApp } from "./UnauthApp";
-import { useAuth } from "./context/authContext";
+import {useAuth} from "./context/authContext";
 import { AppProviders } from "./context";
+import LoadingFullScreen from "./components/LoadingFullScreen";
+
+const AuthApp = React.lazy(() => import("./AuthApp"));
+const UnauthApp = React.lazy(() => import("./UnauthApp"));
 
 function App() {
 	return (
@@ -14,7 +16,12 @@ function App() {
 
 const AppConsumer = () => {
 	const { authUser } = useAuth();
-	return authUser ? <AuthApp /> : <UnauthApp />;
+
+	return (
+		<React.Suspense fallback={<LoadingFullScreen />}>
+			{authUser ? <AuthApp /> : <UnauthApp />}
+		</React.Suspense>
+	);
 };
 
 export { App };

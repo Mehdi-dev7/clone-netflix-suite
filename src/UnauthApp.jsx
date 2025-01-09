@@ -32,4 +32,4 @@ function UnauthApp() {
 	);
 }
 
-export { UnauthApp };
+export default UnauthApp 
