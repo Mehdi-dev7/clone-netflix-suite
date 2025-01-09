@@ -1,24 +1,23 @@
-import * as React from "react";
-import { styled, alpha } from "@mui/material/styles";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Divider from "@mui/material/Divider";
+import DoNotDisturbIcon from "@mui/icons-material/DoNotDisturb";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import SkipNextIcon from "@mui/icons-material/SkipNext";
+import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
+import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { alpha, styled, useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
-import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import SkipNextIcon from "@mui/icons-material/SkipNext";
-import DoNotDisturbIcon from "@mui/icons-material/DoNotDisturb";
-import { useTheme } from "@mui/material/styles";
+import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { useNavigateMovie } from "../context/historyMoviesContext";
 import { TYPE_MOVIE, TYPE_TV, imagePath400 } from "../config";
+import { useNavigateMovie } from "../context/HistoryMoviesContext";
 
 const StyledMenu = styled((props) => (
 	<Menu
@@ -73,10 +72,6 @@ function MenuHistory({ style }) {
 	};
 	const handleClose = () => {
 		setAnchorEl(null);
-
-		if (document.activeElement) {
-			document.activeElement.blur();
-		}
 		const triggerButton = document.querySelector("#demo-customized-button");
 		if (triggerButton) {
 			triggerButton.focus();
@@ -97,8 +92,9 @@ function MenuHistory({ style }) {
 					handleClose();
 					if (document.activeElement) {
 						document.activeElement.blur();
-					} 
+					}
 				}}
+				inert={open ? undefined : true}
 			>
 				<MenuItem onClick={handleClose} disableRipple>
 					<VisibilityIcon />
@@ -106,7 +102,7 @@ function MenuHistory({ style }) {
 				</MenuItem>
 				{series.map((serie, index) => (
 					<MenuItem key={index} onClick={handleClose} disableRipple>
-						<MenuHistoryCard  wideImage={true} movie={serie} type={TYPE_TV} />
+						<MenuHistoryCard wideImage={true} movie={serie} type={TYPE_TV} />
 					</MenuItem>
 				))}
 
