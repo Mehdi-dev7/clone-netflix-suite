@@ -39,31 +39,39 @@ const AuthProvider = (props) => {
 
 	const [authError, setAuthError] = React.useState();
 
-	const login = (data) =>
+	const login = React.useCallback((data) => { 
 		authNetflix
 			.login(data)
 			.then((user) => setData(user))
 			.catch((err) => setAuthError(err));
+  }, [setData]);
 
-	const register = (data) =>
-		authNetflix
-			.register(data)
-			.then((user) => setData(user))
-			.catch((err) => setAuthError(err));
+  const register = React.useCallback((data) => {
+    
+    authNetflix
+    .register(data)
+    .then((user) => setData(user))
+    .catch((err) => setAuthError(err));
+  }, [setData]);
 
-	const logout = () => {
+	const logout = React.useCallback(  () => {
 		authNetflix.logout();
 		queryClient.clear();
 		clearHistory();
 		setData(null);
-	};
+	}, [queryClient, clearHistory, setData]);
+
+   const value = React.useMemo(
+    () => ({ authUser, login, register, logout, authError }),
+    [authUser, login, register, logout, authError]
+  );
 
 	if (status === "fetching" || status === "idle") {
 		return React.createElement(LoadingFullScreen); // LoadingFullScreen 
 	}
 
 	if (status === "done") {
-		const value = { authUser, login, register, logout, authError };
+	
 		return React.createElement(AuthContext.Provider, {
 			value,
 			...props,

@@ -16,12 +16,11 @@ const reducer = (state, action) => {
 				...state,
 				series: [action.payload, ...state.series.slice(0, MAX_ELEMENTS - 1)],
 			};
-      case "clear":
-        return {
-          movies: [],
-          series: [],
-        
-      }
+		case "clear":
+			return {
+				movies: [],
+				series: [],
+			};
 		default:
 			throw new Error("Action non supporté");
 	}
@@ -31,34 +30,32 @@ const HistoryMovieProvider = (props) => {
 		movies: [],
 		series: [],
 	});
+
+	const addMovie = React.useCallback((movie) => {
+		dispatch({
+			type: "addMovie",
+			payload: movie,
+		});
+	}, []);
+	const addSerie = React.useCallback((serie) => {
+		dispatch({
+			type: "addSerie",
+			payload: serie,
+		});
+	}, []);
+	const clearHistory = React.useCallback(() => {
+		dispatch({
+			type: "clear",
+		});
+	});
+
+	const { movies, series } = state;
+	const value = React.useMemo(() => {
+		movies, series, addMovie, addSerie, clearHistory;
+	}, [addMovie, addSerie, clearHistory, movies, series]);
 	
-  const addMovie = React.useCallback(movie => {
-    dispatch({
-      type: 'addMovie',
-      payload: movie,
-    })
-  }, [])
-  const addSerie = React.useCallback(serie => {
-    dispatch({
-      type: 'addSerie',
-      payload: serie,
-    })
-  }, [])
-  const clearHistory = React.useCallback(() => {
-    dispatch({
-      type: 'clear',
-    })
-  })
 
-  const { movies, series } = state;
-  const value = {movies, series, addMovie, addSerie, clearHistory};
-
-	return (
-		<HistoryMovieContext.Provider
-			value={value}
-			{...props}
-		/>
-	);
+	return <HistoryMovieContext.Provider value={value} {...props} />;
 };
 const useNavigateMovie = () => {
 	const context = React.useContext(HistoryMovieContext);
@@ -71,23 +68,29 @@ const useNavigateMovie = () => {
 };
 
 const useAddHistory = (movie, type = TYPE_TV) => {
-  const { addMovie, addSerie } = useNavigateMovie();
+	const { addMovie, addSerie } = useNavigateMovie();
 
-  React.useEffect(() => {
-    if (movie) {
-      if (type === TYPE_TV) {
-        addSerie(movie);
-      } else {
-        addMovie(movie);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [movie]);
+	React.useEffect(() => {
+		if (movie) {
+			if (type === TYPE_TV) {
+				addSerie(movie);
+			} else {
+				addMovie(movie);
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [movie]);
 };
 
 const useClearHistory = () => {
-  const {clearHistory} = useNavigateMovie()
-  return clearHistory
-}
+	const { clearHistory } = useNavigateMovie();
+	return clearHistory;
+};
 
-export { HistoryMovieContext, useNavigateMovie, HistoryMovieProvider, useAddHistory, useClearHistory };
+export {
+	HistoryMovieContext,
+	useNavigateMovie,
+	HistoryMovieProvider,
+	useAddHistory,
+	useClearHistory,
+};

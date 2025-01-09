@@ -3,7 +3,7 @@ import {useAuth} from "./context/authContext";
 import { AppProviders } from "./context";
 import LoadingFullScreen from "./components/LoadingFullScreen";
 
-const AuthApp = React.lazy(() => import("./AuthApp"));
+const AuthApp = React.lazy(() => import(/* webpackPrefetch: true */ "./AuthApp"));
 const UnauthApp = React.lazy(() => import("./UnauthApp"));
 
 function App() {
