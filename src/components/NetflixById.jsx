@@ -7,6 +7,7 @@ import { TYPE_MOVIE, TYPE_TV } from "../config";
 import { useParams, useLocation } from "react-router-dom";
 import { useMovie } from "../utils/hooksMovies";
 import { useAddHistory } from "../context/HistoryMoviesContext";
+import { Profiler2 } from "./Profiler2"; 
 import "./Netflix.css";
 
 const NetflixById = ({ logout }) => {
@@ -34,6 +35,7 @@ const NetflixById = ({ logout }) => {
 
 	return (
 		<div>
+			<Profiler2 id="Film by Id" appData={{ type, id: headerMovie?.id }}>
 			<NetflixAppBar logout={logout} />
 			<NetflixHeader movie={headerMovie} type={type} />
 			<NetflixRow
@@ -78,6 +80,7 @@ const NetflixById = ({ logout }) => {
 			/>
 
 			<NetFlixFooter color="secondary" si />
+			</Profiler2>
 		</div>
 	);
 };

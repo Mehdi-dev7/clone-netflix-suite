@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { TYPE_MOVIE, TYPE_TV, imagePath400 } from "../config";
 import { NetflixAppBar } from "./NetflixAppBar";
 import { NetflixHeader } from "./NetflixHeader";
-import {useMovie,useBookmark} from '../utils/hooksMovies'
+import { useMovie, useBookmark } from "../utils/hooksMovies";
+import { Profiler2 } from "./Profiler2";
 
 const NetflixBookmark = ({ logout }) => {
 	const data = useBookmark();
@@ -12,34 +13,36 @@ const NetflixBookmark = ({ logout }) => {
 
 	return (
 		<>
-			<NetflixAppBar logout={logout} />
-			<NetflixHeader movie={headerMovie} type={TYPE_MOVIE} />
+			<Profiler2 id="Bookmark" appData={{ bookmark: data?.bookmark }}>
+				<NetflixAppBar logout={logout} />
+				<NetflixHeader movie={headerMovie} type={TYPE_MOVIE} />
 
-			<div className="row">
-				<h2>Films favoris</h2>
-				<div className="row__posters">
-					{data?.bookmark.movies.map((id) => {
-						return (
-							<Card
-								key={id}
-								id={id}
-								type={TYPE_MOVIE}
-								watermark={true}
-								wideImage={true}
-							/>
-						);
-					})}
+				<div className="row">
+					<h2>Films favoris</h2>
+					<div className="row__posters">
+						{data?.bookmark.movies.map((id) => {
+							return (
+								<Card
+									key={id}
+									id={id}
+									type={TYPE_MOVIE}
+									watermark={true}
+									wideImage={true}
+								/>
+							);
+						})}
+					</div>
 				</div>
-			</div>
 
-			<div className="row">
-				<h2>Séries favorites</h2>
-				<div className="row__posters">
-					{data?.bookmark.series.map((id) => {
-						return <Card key={id} id={id} type={TYPE_TV} />;
-					})}
+				<div className="row">
+					<h2>Séries favorites</h2>
+					<div className="row__posters">
+						{data?.bookmark.series.map((id) => {
+							return <Card key={id} id={id} type={TYPE_TV} />;
+						})}
+					</div>
 				</div>
-			</div>
+			</Profiler2>
 		</>
 	);
 };
