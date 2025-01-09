@@ -68,10 +68,12 @@ function MenuHistory({ style }) {
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
 	const handleClick = (event) => {
+		event.stopPropagation();
 		setAnchorEl(event.currentTarget);
 	};
 	const handleClose = () => {
 		setAnchorEl(null);
+
 		if (document.activeElement) {
 			document.activeElement.blur();
 		}
@@ -91,11 +93,11 @@ function MenuHistory({ style }) {
 				}}
 				anchorEl={anchorEl}
 				open={open}
-				onClose={() => {
+				onClose={(event) => {
 					handleClose();
 					if (document.activeElement) {
 						document.activeElement.blur();
-					}
+					} 
 				}}
 			>
 				<MenuItem onClick={handleClose} disableRipple>
@@ -104,7 +106,7 @@ function MenuHistory({ style }) {
 				</MenuItem>
 				{series.map((serie, index) => (
 					<MenuItem key={index} onClick={handleClose} disableRipple>
-						<MenuHistoryCard wideImage={true} movie={serie} type={TYPE_TV} />
+						<MenuHistoryCard  wideImage={true} movie={serie} type={TYPE_TV} />
 					</MenuItem>
 				))}
 
@@ -137,11 +139,12 @@ function MenuHistoryCard({ movie, type, wideImage = true }) {
 	const title = (movie?.name ?? movie.original_title)?.substring(0, 20);
 	const description = movie?.overview?.substring(0, 30) + "...";
 
-	const handleClick = () => {
+	const handleClick = (e) => {
+		e.stopPropagation();
 		navigate(`/${type}/${movie.id}`);
 	};
 	return (
-		<Card sx={{ display: "flex" }}>
+		<Card sx={{ display: "flex" }} onClick={(e) => e.stopPropagation()}>
 			<Box sx={{ display: "flex", flexDirection: "column" }}>
 				<CardContent sx={{ flex: "1 0 auto" }}>
 					<Typography component="div" variant="h5" style={{ width: "250px" }}>
