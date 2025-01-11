@@ -12,13 +12,15 @@ import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
-import {useAuth } from "../context/authContext";
-import React, { use } from "react";
+import React from "react";
+import { useAuth } from "../context/authContext";
 
 const FormContainer = styled("form")(({ theme }) => ({
 	display: "flex",
 	flexDirection: "column",
 	minWidth: "330px",
+	width: "90%",
+	maxWidth: "100%",
 	"& > *": {
 		margin: theme.spacing(1),
 	},
@@ -37,7 +39,7 @@ const FormLogin = ({ create = false, login, register, logout }) => {
 	const label = create ? "Inscrivez vous" : "Connexion";
 
 	return (
-		<FormContainer noValidate autoComplete="off">
+		<FormContainer className="form-container" noValidate autoComplete="off">
 			<TextField
 				id="filled-basic"
 				label="Email ou numéro de téléphone"
@@ -111,13 +113,8 @@ FormLogin.propTypes = {
 	logout: PropTypes.func,
 };
 
-function PopupLogin({
-	open,
-	handleClose,
-	signup = false,
-	status,
-}) {
-	const {login, logout, register, authError: error} = useAuth()
+function PopupLogin({ open, handleClose, signup = false, status }) {
+	const { login, logout, register, authError: error } = useAuth();
 	const [create, setCreate] = React.useState(signup);
 	const handleSignUp = () => {
 		setCreate(true);

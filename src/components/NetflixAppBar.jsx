@@ -87,7 +87,7 @@ const NetflixAppBar = () => {
 
 		return () => window.removeEventListener("scroll", onScroll);
 	}, []);
-	const margin10 = { margin: 10, marginLeft: 20 };
+	const margin10 = { margin: 10, marginLeft: 15 };
 	const handleKeyPress = (e) => {
 		if (e.key === "Enter") {
 			navigate(`/search/${query}`);
