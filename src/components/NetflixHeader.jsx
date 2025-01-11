@@ -3,14 +3,17 @@ import MuiAlert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import React from "react";
 import { imagePathOriginal, TYPE_MOVIE } from "../config";
+import {
+	useAddBookmark,
+	useBookmark,
+	useDeleteBookmark,
+} from "../utils/hooksMovies";
 import { HeaderSkeleton } from "./skeletons/HeaderSkeleton";
-import { useAddBookmark, useBookmark, useDeleteBookmark } from "../utils/hooksMovies";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 const NetflixHeader = ({ movie, type = TYPE_MOVIE }) => {
-	
 	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
 	const [mutateBookmarkError, setMutateBookmarkError] = React.useState();
 	const title = type === TYPE_MOVIE ? movie?.title : movie?.name;
@@ -18,13 +21,14 @@ const NetflixHeader = ({ movie, type = TYPE_MOVIE }) => {
 	const banner = {
 		backgroundImage: `url('${imageUrl}')`,
 		backgroundSize: "cover",
-		backgroundPosition: "center center",
+		backgroundPosition: "center",
 		color: "white",
 		objectFit: "contain",
 		height: "448px",
+		minHeight: "448px",
 	};
 
-	const data = useBookmark()
+	const data = useBookmark();
 
 	const addMutation = useAddBookmark({
 		onSuccess: () => {
@@ -35,7 +39,7 @@ const NetflixHeader = ({ movie, type = TYPE_MOVIE }) => {
 			setSnackbarOpen(true);
 			setMutateBookmarkError(error);
 		},
-	})
+	});
 	const deleteMutation = useDeleteBookmark({
 		onSuccess: () => {
 			setSnackbarOpen(true);
@@ -45,7 +49,7 @@ const NetflixHeader = ({ movie, type = TYPE_MOVIE }) => {
 			setSnackbarOpen(true);
 			setMutateBookmarkError(error);
 		},
-	})
+	});
 
 	const isInList = data?.bookmark[
 		type === TYPE_MOVIE ? "movies" : "series"

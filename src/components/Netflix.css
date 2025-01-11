@@ -26,6 +26,7 @@ a {
 	display: flex;
 	overflow-y: hidden;
 	overflow-x: scroll;
+	height: 100%;
 	padding: 20px;
 }
 
@@ -95,10 +96,13 @@ a {
 .banner {
 	background-image: url("../assets/images/banner.jpg");
 	background-size: cover;
-	background-position: center center;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
 	color: white;
 	object-fit: contain;
 	height: 448px;
+	min-height: 448px;
 }
 
 .banner__contents {
@@ -205,4 +209,72 @@ a {
 	text-align: center;
 	color: grey;
 	margin: 10px;
+}
+
+/* Ajout de styles pour le toggle de la navigation */
+.nav__toggle {
+	display: none; /* Masquer par défaut */
+	background-color: transparent;
+	color: white;
+	border: none;
+	cursor: pointer;
+	font-size: 1.2rem;
+	margin-left: 5px;
+}
+
+/* Styles pour les liens de navigation */
+.nav__links {
+	display: flex;
+	flex-direction: row;
+}
+.categories {
+	margin: 10px;
+	font-size: 1.2rem;
+	padding: 10px;
+}
+
+.nav__links.open {
+	display: flex; /* Afficher les liens lorsque navOpen est vrai */
+	flex-direction: column;
+	position: absolute;
+	top: 0;
+	left: 0; /* Positionner le menu à gauche */
+	height: 100vh;
+	width: 50vw;
+	background-color: rgb(0 0 0 / 75%);
+	transform: translateX(
+		0
+	); /* Assurez-vous que la transformation est correcte */
+	transition: transform 0.3s ease-in-out;
+}
+
+/* Media query pour les écrans plus petits */
+@media (max-width: 1050px) {
+	.nav__toggle {
+		display: block; /* Afficher le bouton de toggle sur mobile */
+	}
+	.nav__links {
+		display: none;
+
+		/* Masquer les liens par défaut */
+	}
+}
+
+@media (max-width: 1050px) {
+	.categories:hover {
+		background-color: rgba(126, 126, 126, 0.5);
+	}
+	.close-icon {
+		position: absolute;
+		top: 10px; /* Ajustez la position selon vos besoins */
+		right: 10px; /* Ajustez la position selon vos besoins */
+		color: white; /* Couleur de l'icône */
+		cursor: pointer; /* Changer le curseur pour indiquer que c'est cliquable */
+	}
+}
+
+@media (min-width: 1050px) {
+	.close-icon {
+		display: none; /* Masquer l'icône de fermeture */
+	}
 }

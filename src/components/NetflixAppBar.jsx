@@ -1,12 +1,13 @@
-import * as React from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import SearchIcon from "@mui/icons-material/Search";
 import AppBar from "@mui/material/AppBar";
+import InputBase from "@mui/material/InputBase";
+import { alpha, styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { Link } from "react-router-dom";
-import SearchIcon from "@mui/icons-material/Search";
-import { styled, alpha } from "@mui/material/styles";
-import InputBase from "@mui/material/InputBase";
-import { useNavigate } from "react-router-dom";
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { MenuHistory } from "./MenuHistory";
 
@@ -57,13 +58,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const NetflixAppBar = () => {
-	const { logout} = useAuth();
+	const { logout } = useAuth();
 	const navigate = useNavigate();
 	const [query, setQuery] = React.useState("");
 	const [appBarStyle, setAppBarStyle] = React.useState({
 		background: "transparent",
 		boxShadow: "none",
 	});
+	const [navOpen, setNavOpen] = useState(false);
+
 	React.useEffect(() => {
 		const onScroll = (e) => {
 			if (e.target.documentElement.scrollTop >= 100) {
@@ -84,12 +87,31 @@ const NetflixAppBar = () => {
 
 		return () => window.removeEventListener("scroll", onScroll);
 	}, []);
-	const margin10 = { margin: 10 };
+	const margin10 = { margin: 10, marginLeft: 20 };
 	const handleKeyPress = (e) => {
 		if (e.key === "Enter") {
 			navigate(`/search/${query}`);
 		}
 	};
+
+	// Fonction pour fermer le menu
+	const closeMenu = () => {
+		setNavOpen(false);
+	};
+
+	// Écouteur d'événements pour fermer le menu en cliquant en dehors
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (navOpen && !event.target.closest(".nav__links")) {
+				closeMenu();
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [navOpen]);
 
 	return (
 		<AppBar style={appBarStyle}>
@@ -97,29 +119,35 @@ const NetflixAppBar = () => {
 				<img className="nav__logo" src="/images/netflix-logo.png" alt="" />
 				<Link to="/">
 					<Typography style={margin10} variant="h6">
-						Acceuil
+						Accueil
 					</Typography>
 				</Link>
-				<Link to="/series">
-					<Typography style={margin10} variant="h6">
-						Series
-					</Typography>
-				</Link>
-				<Link to="/movies">
-					<Typography style={margin10} variant="h6">
-						Films
-					</Typography>
-				</Link>
-				<Link to="/news">
-					<Typography style={margin10} variant="h6">
-						Nouveautés les plus regardées
-					</Typography>
-				</Link>
-				<Link to="/list">
-					<Typography style={margin10} variant="h6">
-						Ma liste
-					</Typography>
-				</Link>
+				<button className="nav__toggle" onClick={() => setNavOpen(!navOpen)}>
+					Catégories
+				</button>
+				<div className={`nav__links ${navOpen ? "open" : ""}`}>
+					<CloseIcon className="close-icon" onClick={closeMenu} />
+					<Link to="/series">
+						<Typography className="categories">
+							Séries
+						</Typography>
+					</Link>
+					<Link to="/movies">
+						<Typography className="categories">
+							Films
+						</Typography>
+					</Link>
+					<Link to="/news">
+						<Typography className="categories">
+							Nouveautés les plus regardées
+						</Typography>
+					</Link>
+					<Link to="/list">
+						<Typography className="categories">
+							Ma liste
+						</Typography>
+					</Link>
+				</div>
 				{/* 🐶 Utilise le composant de recherche */}
 				<Search>
 					<SearchIconWrapper>
@@ -133,7 +161,7 @@ const NetflixAppBar = () => {
 						inputProps={{ "aria-label": "search" }}
 					/>
 				</Search>
-				<MenuHistory style={{ cursor : "pointer", marginLeft: "10px" }} />
+				<MenuHistory style={{ cursor: "pointer", marginLeft: "10px" }} />
 				<img
 					style={{ marginLeft: "auto", cursor: "pointer" }}
 					className="nav__avatar"
